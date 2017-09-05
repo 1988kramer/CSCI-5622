@@ -32,7 +32,7 @@ class Knearest:
     kNN classifier
     """
 
-    def __init__(self, x, y, k=5):
+    def __init__(self, x, y, k):
         """
         Creates a kNN instance
 
@@ -43,10 +43,13 @@ class Knearest:
         
         # Finish this function to store necessary data so you can 
         # do classification later
+        # print(x.shape)
 
         self._kdtree = BallTree(x)
         self._y = y
         self._k = k
+        self._num_classes = 10
+        # print("searching for " + str(k) + " nearest neighbors")
 
     def majority(self, item_indices):
         """
@@ -55,14 +58,31 @@ class Knearest:
 
         :param item_indices: The indices of the k nearest neighbors
         """
+        # print(len(item_indices))
         assert len(item_indices) == self._k, "Did not get k inputs"
 
         # Finish this function to return the most common y value for
         # these indices
         #
         # http://docs.scipy.org/doc/numpy/reference/generated/numpy.median.html
-
-        return self._y[item_indices[0]]
+        
+        # make array of counts where counts[i] is the number of times
+        # the label i appears in the item_indices
+        counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        for index in item_indices:
+            counts[self._y[index]] += 1
+        # determine the highest count in counts
+        max_count = 0
+        for i in range(0, len(counts)):
+            if counts[i] > max_count:
+                max_count = counts[i]
+        # make a new list of values whose count is max_count
+        modes = list()
+        for i in range(0, len(counts)):
+            if counts[i] == max_count:
+                modes.append(i)
+        # return median of values with highest count
+        return int(numpy.median(modes))
 
     def classify(self, example):
         """
@@ -75,8 +95,13 @@ class Knearest:
         # Finish this function to find the k closest points, query the
         # majority function, and return the value.
 
-        return self.majority(list(random.randrange(len(self._y)) \
-                                  for x in xrange(self._k)))
+        example = example.reshape(1, -1) # query expects a 2D array
+        # query tree for k nearest neighbors
+        ind = self._kdtree.query(example, k = self._k, return_distance = False);
+        ind = ind.flatten() # query returns a 2D array
+                            # but majority expects 1D
+        return self.majority(ind)
+
 
     def confusion_matrix(self, test_x, test_y, debug=False):
         """
@@ -94,8 +119,15 @@ class Knearest:
         # function for each example.
 
         d = defaultdict(dict)
+        # initialize the dictionary with zero values for each key
+        for i in range(0, self._num_classes):
+            for j in range(0, self._num_classes):
+                d[i][j] = 0
+
         data_index = 0
         for xx, yy in zip(test_x, test_y):
+            y_est = self.classify(xx) # find knn classification
+            d[yy][y_est] += 1 
             data_index += 1
             if debug and data_index % 100 == 0:
                 print("%i/%i for confusion matrix" % (data_index, len(test_x)))
@@ -142,10 +174,10 @@ if __name__ == "__main__":
     print("Done loading data")
 
     confusion = knn.confusion_matrix(data.test_x, data.test_y)
-    print("\t" + "\t".join(str(x) for x in xrange(10)))
+    print("\t" + "\t".join(str(x) for x in range(10)))
     print("".join(["-"] * 90))
-    for ii in xrange(10):
+    for ii in range(10):
         print("%i:\t" % ii + "\t".join(str(confusion[ii].get(x, 0))
-                                       for x in xrange(10)))
+                                       for x in range(10)))
     print("Accuracy: %f" % knn.accuracy(confusion))
 
