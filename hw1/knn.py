@@ -68,17 +68,20 @@ class Knearest:
         
         # make array of counts where counts[i] is the number of times
         # the label i appears in the item_indices
-        counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        counts = dict()
         for index in item_indices:
-            counts[self._y[index]] += 1
+            if self._y[index] in counts.keys():
+                counts[self._y[index]] += 1
+            else:
+                counts[self._y[index]] = 1
         # determine the highest count in counts
         max_count = 0
-        for i in range(0, len(counts)):
+        for i in counts.keys():
             if counts[i] > max_count:
                 max_count = counts[i]
         # make a new list of values whose count is max_count
         modes = list()
-        for i in range(0, len(counts)):
+        for i in counts.keys():
             if counts[i] == max_count:
                 modes.append(i)
         # return median of values with highest count
