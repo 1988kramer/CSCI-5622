@@ -29,12 +29,9 @@ def split_cv(length, num_folds):
     splits = [SplitIndices([], []) for _ in range(num_folds)]
     indices = list(range(length))
     random.shuffle(indices)
-    # Finish this function to populate `splits`.
-    # All the indices are split into num_folds splits.
-    # Each fold is the testing set in a split, and the remaining indices
-    # are added to the corresponding training set.
+    
     fold_size = int(length / num_folds)
-    test_start = 0
+    test_start = 0 # starting index for the test fold
     for j in range(num_folds):
         for i in range(length):
             if i in range(test_start, test_start + fold_size):
