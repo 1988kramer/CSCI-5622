@@ -48,16 +48,17 @@ class Numbers:
 
 
 class LogReg:
-    def __init__(self, num_features, eta):
+    def __init__(self, num_features, eta, mu=0):
         """
         Create a logistic regression classifier
         :param num_features: The number of features (including bias)
         :param eta: A function that takes the iteration as an argument (the default is a constant value)
         """
 
-        self.w = np.zeros(num_features)
-        self.eta = eta
+        self.w = np.zeros(num_features) # should be randomly initialized
+        self.eta = eta # learning rate
         self.last_update = defaultdict(int)
+        self.mu = mu # regularization constant
 
     def progress(self, examples_x, examples_y):
         """
@@ -92,6 +93,11 @@ class LogReg:
         # TODO: Finish this function to do a single stochastic gradient descent update
         # and return the updated weight vector
 
+        # compute predicted y value
+        y_hat = sigmoid(self.w.dot(x_i)) # might need to transpose weights
+        # compute regularized gradient
+        gradient = (self.mu * self.w) - ((y - y_hat) * x_i)
+        self.w = self.w - (self.eta * gradient)
         return self.w
 
 def sigmoid(score, threshold=20.0):
@@ -103,10 +109,9 @@ def sigmoid(score, threshold=20.0):
     if abs(score) > threshold:
         score = threshold * np.sign(score)
 
-    # TODO: Finish this function to return the output of applying the sigmoid
-    # function to the input score (Please do not use external libraries)
+    sig = exp(score) / (1.0 + exp(score))
 
-    return 1.0
+    return sig
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -124,6 +129,7 @@ if __name__ == "__main__":
 
     # Iterations
     iteration = 0
+    print()
     for epoch in range(args.passes):
         data.train_x, data.train_y = Numbers.shuffle(data.train_x, data.train_y)
 
@@ -132,3 +138,18 @@ if __name__ == "__main__":
 
         # NOTE: It may be helpful to call upon the 'progress' method in the LogReg
         # class to make sure the algorithm is truly learning properly on both training and test data
+        
+        # loop over all examples in training set
+        # performing SGD with each new example
+        for i in range(len(data.train_x[0])):
+            x_i = data.train_x[i,:]
+            lr.sgd_update(x_i, data.train_y[i])
+
+        # check training and test accuracy 
+        # at the end of each epoch
+        train_logprob, train_accuracy = lr.progress(data.train_x, data.train_y)
+        # test_logprob, test_accuracy = progress(data.test_x, data.test_y)
+
+        print('Training accuracy for epoch {0} is {1:.2f}.'.format(epoch, train_accuracy))
+        print('          LogProb for epoch {0} is {1:.2f}.'.format(epoch, train_logprob))
+        print()
