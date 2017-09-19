@@ -119,13 +119,15 @@ if __name__ == "__main__":
                            type=float, default=0.1, required=False)
     argparser.add_argument("--passes", help="Number of passes through training data",
                            type=int, default=1, required=False)
+    argparser.add_argument("--mu", help="Regularization constant",
+                           type=float, default=0, required=False)
 
     args = argparser.parse_args()
 
     data = Numbers('../data/mnist.pkl.gz')
 
     # Initialize model
-    lr = LogReg(data.train_x.shape[1], args.eta)
+    lr = LogReg(data.train_x.shape[1], args.eta, args.mu)
 
     # Iterations
     iteration = 0
@@ -148,8 +150,10 @@ if __name__ == "__main__":
         # check training and test accuracy 
         # at the end of each epoch
         train_logprob, train_accuracy = lr.progress(data.train_x, data.train_y)
-        # test_logprob, test_accuracy = progress(data.test_x, data.test_y)
+        test_logprob, test_accuracy = lr.progress(data.test_x, data.test_y)
 
-        print('Training accuracy for epoch {0} is {1:.2f}.'.format(epoch, train_accuracy))
-        print('          LogProb for epoch {0} is {1:.2f}.'.format(epoch, train_logprob))
+        print('Training accuracy for epoch {0} is {1:.4f}.'.format(epoch + 1, train_accuracy))
+        #print('                      LogProb is {0:.2f}.'.format(train_logprob))
+        print('    Test accuracy for epoch {0} is {1:.4f}.'.format(epoch + 1, test_accuracy))
+        #print('                      LogProb is {0:.2f}.'.format(test_logprob))
         print()
