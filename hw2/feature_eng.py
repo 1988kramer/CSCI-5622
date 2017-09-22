@@ -76,7 +76,7 @@ class BagOfWordsifier(BaseEstimator, TransformerMixin):
 		features = [dict() for x in range(len(examples))]
 		i = 0
 		for ex in examples:
-			word_vector = re.compile('[a-zA-Z0-9_\']+').split(str(ex))
+			word_vector = re.compile('\b\w+\w').split(str(ex))
 			for word in word_vector:
 				if word in features[i].keys():
 					features[i][word] += 1
@@ -105,6 +105,31 @@ class NegativeWordCounter(BaseEstimator, TransformerMixin):
 			i += 1
 		return features
 
+class VocabularyCounter(BaseEstimator, TransformerMixin):
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		features = [dict() for x in range(len(examples))]
+		i = 0
+		for ex in examples:
+			word_vector = re.compile('\b\w+\w').split(str(ex))
+			for word in word_vector:
+				if word in features[i].keys():
+					features[i][word] += 1
+				else:
+					features[i][word] = 1
+			i += 1
+		vocab = np.zeros((len(examples), 1))
+		i = 0
+		for feature in features:
+			vocab[i] = len(feature.keys())
+			i += 1
+		return vocab
+
 class BagOfBigramsifier(BaseEstimator, TransformerMixin):
 	def __init__(self):
 		pass
@@ -114,7 +139,7 @@ class BagOfBigramsifier(BaseEstimator, TransformerMixin):
 
 	def transform(self, examples):
 		features = [dict() for x in range(len(examples))]
-		bigram_vectorizer = CountVectorizer(ngram_range=(1, 2), token_pattern=r'\b\w+\w', min_df=1)
+		bigram_vectorizer = CountVectorizer(ngram_range=(2, 2), token_pattern=r'\b\w+\w', min_df=1)
 		analyze = bigram_vectorizer.build_analyzer()
 		i = 0
 		for ex in examples:
@@ -127,6 +152,27 @@ class BagOfBigramsifier(BaseEstimator, TransformerMixin):
 			i += 1
 		return features
 
+class BagOfTrigramsifier(BaseEstimator, TransformerMixin):
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		features = [dict() for x in range(len(examples))]
+		trigram_vectorizer = CountVectorizer(ngram_range=(3, 3), token_pattern=r'\b\w+\w', min_df=1)
+		analyze = trigram_vectorizer.build_analyzer()
+		i = 0
+		for ex in examples:
+			trigram_vector = analyze(str(ex))
+			for trigram in trigram_vector:
+				if trigram in features[i].keys():
+					features[i][trigram] += 1
+				else:
+					features[i][trigram] = 1
+			i += 1
+		return features
 
 class Featurizer:
     def __init__(self):
@@ -145,6 +191,10 @@ class Featurizer:
             	('bag_of_words', BagOfWordsifier()),
             	('vect', DictVectorizer())
             ])),
+            ('vocab_count', Pipeline([
+                ('selector', ItemSelector(key='text')),
+                ('vocab', VocabularyCounter())
+            ])),
             ('negative_words', Pipeline([
             	('selector', ItemSelector(key='text')),
             	('negative_count', NegativeWordCounter())
@@ -152,6 +202,11 @@ class Featurizer:
             ('bagOfBiGrams', Pipeline([
             	('selector', ItemSelector(key='text')),
             	('bag_of_bigrams', BagOfBigramsifier()),
+            	('vect', DictVectorizer())
+            ])),
+            ('bagOfTriGrams', Pipeline([
+            	('selector', ItemSelector(key='text')),
+            	('bag_of_trigrams', BagOfTrigramsifier()),
             	('vect', DictVectorizer())
             ]))
         ])
