@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+
+% ==== PACKAGES ==== %
+% \usepackage{fullpage}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage[letterpaper, margin=1in]{geometry}
+
+% ==== MARGINS ==== %
+% \pagestyle{empty}
+% \setlength{\oddsidemargin}{0in}
+% \setlength{\textwidth}{6.8in}
+% \setlength{\textheight}{9.5in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSCI 5622}
+\lhead{Homework 1}
+\rfoot{Page \thepage}
+
+
+\newtheorem*{solution*}{Solution}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{corollary}[lemma]{Corollary}
+\lstset{moredelim=[is][\bfseries]{[*}{*]}}
+
+% ==== DOCUMENT PROPER ==== %
+\begin{document}
+
+\thispagestyle{empty}
+
+% --- Header Box --- %
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+
+\begin{center}\framebox{\parbox{\boxlength}{\bf
+      Machine Learning \hfill Homework 2\\
+      CSCI 5622 Fall 2017 \hfill Due Date: Sep 29, 2017\\
+      Name: Andrew Kramer \hfill CU identitykey: ankr1041
+}}
+\end{center}
+
+
+
+
+\section{Logistic Regression (15 pts)}
+
+\begin{solution*}
+\end{solution*}
+
+
+\section{Feature Engineering (15 pts)}
+
+\begin{solution*}
+\end{solution*}
+
+\section{Gradient Descent Learning Rule (20 pts)}
+
+Derive the negative log likelihood for multi-class logistic regression:
+
+\begin{align*}
+	L (\beta) = P(Y \vert X, \beta) &= \prod_{j = 1}^{C} P(y_{j} \vert x_{j}, \beta)\\
+	-\ell(\beta) = -\log P(Y \vert X, \beta) &= -\sum_{j = 1}^{C} \log P(y_{j} \vert x_{j}, \beta)\\
+	-\ell(\beta) &= -\sum_{i:y=1}\log P(y = 1 \vert x_{i}, \beta) - ... - \sum_{i:y=C}\log P(y = C \vert x_{i}, \beta)\\
+	&= -\sum_{j = 1}^{C} \sum_{i:y=j} \log P(y = j \vert x_{i}, \beta)\\
+	&= -\sum_{i = 1}^{N} \sum_{k=1}^{C} 1\{y_{i} = k\} \log \frac{\exp(\beta_{k}^{T}x_{i})}{\sum_{j=1}^{C}\exp(\beta_{j}^{T}x_{i})}
+\end{align*}
+
+Find $\nabla \beta_{c,j}$ for a multi-class logistic regression model: 
+
+\end{document}
