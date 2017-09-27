@@ -78,4 +78,26 @@ Derive the negative log likelihood for multi-class logistic regression:
 
 Find $\nabla \beta_{c,j}$ for a multi-class logistic regression model: 
 
+\begin{align*}
+	\nabla \beta_{c,j} &= \frac{\partial}{\partial \beta_{j}} -\ell(\beta_{j})\\
+	&= \frac{\partial}{\partial \beta_{j}} -\log(p)\\
+	\\
+	\frac{\partial}{\partial \beta_{j}} -\log(p) &= -\frac{1}{p} \frac{\partial}{\partial \beta_{j}}p\\
+	\\
+	\frac{\partial}{\partial \beta_{j}} &= \frac{\partial}{\partial \beta_{j}^{T}} \frac{\exp(\beta_{i})x}{\sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)}\\
+	\\
+	f &= \frac{g}{h}\\
+	f^{\prime}&=\frac{g^{\prime}h-h^{\prime}g}{h^{2}}\\
+	\\
+	g &= \exp(\beta_{j}^{T}x)\\
+	g^{\prime} &= x\exp(\beta_{j}^{T}x)\\
+	h &= \sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)\\
+	h^{\prime} &= x\exp(\beta_{j}^{T}x) \text{ if } i = j\\
+	&= 0 \text{ if } i \neq j\\
+	\\
+	\frac{\partial}{\partial \beta_{j}}p &= \frac{\{i=j\}x \exp(\beta_{i}^{T}x)\sum_{c^{\prime}=1}^{C} \exp(\beta_{c^{\prime}}^{T}x)-x \exp(\beta_{j}^{T}x) \exp(\beta_{i}^{T}x)}{\big[\sum_{c^{\prime}}^{C} \exp(\beta_{c^{\prime}}^{T}x)\big]^{2}}\\
+	\frac{1}{p}\frac{\partial}{\partial \beta_{j}}p &= \frac{\sum_{c^{\prime}}^{C} \exp(\beta_{c_{\prime}}^{T})}{\exp(\beta_{i}^{T}x)} \cdot \frac{\{i=j\}x \exp(\beta_{i}^{T}x)\sum_{c^{\prime}=1}^{C} \exp(\beta_{c^{\prime}}^{T}x)-x \exp(\beta_{j}^{T}x) \exp(\beta_{i}^{T}x)}{\big[\sum_{c^{\prime}}^{C} \exp(\beta_{c^{\prime}}^{T}x)\big]^{2}}\\
+	\frac{\partial}{\partial \beta_{j}} -\log(p) &= -x \bigg[\{i=j\}-\frac{\exp(\beta_{j}^{T}x)}{\sum_{c^{\prime}=1}^{C} \exp(\beta_{c^{\prime}_{T}x})} \bigg]\\
+\end{align*}
+
 \end{document}
