@@ -130,6 +130,29 @@ class VocabularyCounter(BaseEstimator, TransformerMixin):
 			i += 1
 		return vocab
 
+class tfidfifier(BaseEstimator,TransformerMixin):
+    def __init__(self):
+        pass
+
+    def fit(self, examples):
+        return self
+
+    def transform(self, examples):
+        features = [dict() for x in range(len(examples))]
+        vec = TfidfVectorizer(min_df=10)
+        analyze = vec.build_analyzer()
+        i = 0
+        for ex in examples:
+            tfidfVector = analyze(str(ex))
+            for thisVec in tfidfVector:
+                if thisVec in features[i].keys():
+                    features[i][thisVec] += 1
+                else:
+                    features[i][thisVec] = 1
+            i += 1
+        return features
+
+
 class BagOfBigramsifier(BaseEstimator, TransformerMixin):
 	def __init__(self):
 		pass
@@ -195,9 +218,10 @@ class Featurizer:
                 ('selector', ItemSelector(key='text')),
                 ('vocab', VocabularyCounter())
             ])),
-            ('negative_words', Pipeline([
+            ('tfidf', Pipeline([
             	('selector', ItemSelector(key='text')),
-            	('negative_count', NegativeWordCounter())
+            	('tfidf-ifier', tfidfifier()),
+                ('vect', DictVectorizer())
             ])),
             ('bagOfBiGrams', Pipeline([
             	('selector', ItemSelector(key='text')),
@@ -255,7 +279,7 @@ if __name__ == "__main__":
 
 
     # Train classifier
-    lr = SGDClassifier(loss='log', penalty='l2', alpha=0.0001, max_iter=15000, shuffle=True, verbose=2)
+    lr = SGDClassifier(loss='log', penalty='l2', alpha=0.0001, max_iter=5000, shuffle=True, verbose=2)
 
     lr.fit(feat_train, y_train)
     y_pred = lr.predict(feat_train)
