@@ -84,7 +84,7 @@ Find $\nabla \beta_{c,j}$ for a multi-class logistic regression model:
 	\\
 	\frac{\partial}{\partial \beta_{j}} -\log(p) &= -\frac{1}{p} \frac{\partial}{\partial \beta_{j}}p\\
 	\\
-	\frac{\partial}{\partial \beta_{j}} &= \frac{\partial}{\partial \beta_{j}^{T}} \frac{\exp(\beta_{i})x}{\sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)}\\
+	\frac{\partial}{\partial \beta_{j}} &= \frac{\partial}{\partial \beta_{j}} \frac{\exp(\beta_{i})x}{\sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)}\\
 	\\
 	f &= \frac{g}{h}\\
 	f^{\prime}&=\frac{g^{\prime}h-h^{\prime}g}{h^{2}}\\
