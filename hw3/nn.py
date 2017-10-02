@@ -25,7 +25,7 @@ class Network:
     def forward_prop(self, a):
         """
         memory aware forward propagation for testing
-        only.  back_prop implements it's own forward_prop
+        only.  back_prop implements its own forward_prop
         """
         for (W,b) in zip(self.weights, self.biases):
             a = self.g(np.dot(W, a) + b)
@@ -54,6 +54,9 @@ class Network:
                 xk = train[perm[kk]][0]
                 yk = train[perm[kk]][1]
                 dWs, dbs = self.back_prop(xk, yk)
+                #print(dbs[0].shape, dWs[0].shape)
+                #print(dbs[1].shape, dWs[1].shape)
+                #print()
                 # TODO: Add L2-regularization
                 self.weights = [W - eta*dW for (W, dW) in zip(self.weights, dWs)]
                 self.biases = [b - eta*db for (b, db) in zip(self.biases, dbs)]
@@ -77,19 +80,24 @@ class Network:
         a_list = [a]
         z_list = [np.zeros(a.shape)] # Pad with throwaway so indices match
 
+        # forward propagation step
         for W, b in zip(self.weights, self.biases):
+            #print(b.shape, W.shape)
             z = np.dot(W, a) + b
             z_list.append(z)
             a = self.g(z)
             a_list.append(a)
 
         # Back propagate deltas to compute derivatives
-        # TODO delta  =
+        delta  = -1 * np.multiply((y - a_list[self.L-1]), 
+                                   self.g_prime(z_list[self.L-1]))
         for ell in range(self.L-2,-1,-1):
-            # TODO db_list[ell] =
-            # TODO dW_list[ell] =
-            # TODO delta =
-            pass
+            dW_list[ell] = np.dot(delta, np.transpose(a_list[ell]))
+            db_list[ell] = np.squeeze(np.sum(delta, axis=1)) # may need to switch sum direction
+            db_list[ell] = np.expand_dims(db_list[ell], axis=1)
+            delta = np.multiply(np.dot(
+                    np.transpose(self.weights[ell]), delta), 
+                    self.g_prime(z_list[ell]))
 
         return (dW_list, db_list)
 
