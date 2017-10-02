@@ -41,7 +41,7 @@ class Network:
     def SGD_train(self, train, epochs, eta, lam=0.0, verbose=True, test=None):
         """
         SGD for training parameters
-        epochs is the number of epocs to run
+        epochs is the number of epochs to run
         eta is the learning rate
         lam is the regularization parameter
         If verbose is set will print progressive accuracy updates
@@ -54,10 +54,13 @@ class Network:
                 xk = train[perm[kk]][0]
                 yk = train[perm[kk]][1]
                 dWs, dbs = self.back_prop(xk, yk)
-                #print(dbs[0].shape, dWs[0].shape)
-                #print(dbs[1].shape, dWs[1].shape)
-                #print()
-                # TODO: Add L2-regularization
+                
+                # regularization step
+                for dW, W in zip(dWs, self.weights):
+                    dW = dW + (lam * W) #/ n_train
+                    #(W.shape, dW.shape)
+
+                # update weights
                 self.weights = [W - eta*dW for (W, dW) in zip(self.weights, dWs)]
                 self.biases = [b - eta*db for (b, db) in zip(self.biases, dbs)]
             if verbose:
@@ -117,7 +120,7 @@ class Network:
         training example.
         """
         a = self.forward_prop(x)
-        return 0.5*np.linalg.norm(a-y)**2
+        return 0.5*np.linalg.norm(a-y)**2 
 
 def sigmoid(z, threshold=20):
     z = np.clip(z, -threshold, threshold)
