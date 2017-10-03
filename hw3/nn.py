@@ -38,7 +38,7 @@ class Network:
         """
         return (a - y)
 
-    def SGD_train(self, train, epochs, eta, lam=0.0, verbose=True, test=None):
+    def SGD_train(self, train, epochs, eta, lam, verbose=True, test=None):
         """
         SGD for training parameters
         epochs is the number of epochs to run
@@ -56,12 +56,12 @@ class Network:
                 dWs, dbs = self.back_prop(xk, yk)
                 
                 # regularization step
-                for dW, W in zip(dWs, self.weights):
-                    dW = dW + (lam * W) #/ n_train
+                #for dW, W in zip(dWs, self.weights):
+                 #   dW = dW + (lam * W) #/ n_train
                     #(W.shape, dW.shape)
 
                 # update weights
-                self.weights = [W - eta*dW for (W, dW) in zip(self.weights, dWs)]
+                self.weights = [W - (eta*dW) - (eta*lam*W) for (W, dW) in zip(self.weights, dWs)]
                 self.biases = [b - eta*db for (b, db) in zip(self.biases, dbs)]
             if verbose:
                 if epoch==0 or (epoch + 1) % 15 == 0:
