@@ -1,0 +1,123 @@
+\documentclass[11pt]{article}
+
+% ==== PACKAGES ==== %
+% \usepackage{fullpage}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{bbm}
+\usepackage[letterpaper, margin=1in]{geometry}
+
+% ==== MARGINS ==== %
+% \pagestyle{empty}
+% \setlength{\oddsidemargin}{0in}
+% \setlength{\textwidth}{6.8in}
+% \setlength{\textheight}{9.5in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSCI 5622}
+\lhead{Homework 1}
+\rfoot{Page \thepage}
+
+
+\newtheorem*{solution*}{Solution}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{corollary}[lemma]{Corollary}
+\lstset{moredelim=[is][\bfseries]{[*}{*]}}
+
+% ==== DOCUMENT PROPER ==== %
+\begin{document}
+
+\thispagestyle{empty}
+
+% --- Header Box --- %
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+
+\begin{center}\framebox{\parbox{\boxlength}{\bf
+      Machine Learning \hfill Homework 3\\
+      CSCI 5622 Fall 2017 \hfill Due Date: Oct 13, 2017\\
+      Name: Andrew Kramer \hfill CU identitykey: ankr1041
+}}
+\end{center}
+
+
+
+
+\section{Back Propagation (15 pts)}
+
+\subsection{What is the structure of your neural network (both for tinyTOY and tiny MNIST datasets)? Show the dimensions of the input, hidden, and output layers.}
+
+\subparagraph{}
+
+The neural network for the toy dataset had input dimension of 2, hidden dimension of 30, and output dimension of 2.
+
+The neural network for the MNIST dataset had input dimension of 196, hidden dimension of SOMETHING, and output dimension of 10.
+
+\subsection{What is the role of the size of the hidden layer on training and testing accuracy?}
+
+\subparagraph{}
+
+Increasing the size of the hidden layer seems to have no affect on the training accuracy. Increasing the size of the hidden layer increases testing accuracy up to a point. Testing accuracy seems to peak with a hidden layer size of 128. Accuracy decreases when hidden layer size is increased beyond this. Accuracy for both training and testing decreases sharply when hidden layer size increases beyond 256. See the chart below for details.
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{hidden-accuracy.png}
+	\label{fig:graph}
+\end{figure}
+
+\subsection{How does the number of epochs affect training and testing accuracy?}
+
+\subparagraph{}
+
+Increasing the number of training epochs increases testing and training accuracy up to a point. For a hidden layer size of 256, training and testing accuracy increase until about 100 epochs, after which point additional epochs don't improve accuracy. Note also that additional epochs beyond this point also do not hurt training accuracy.
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{epochs-accuracy.png}
+	\label{fig:graph}
+\end{figure}
+
+\section{Keras CNN (15 pts)}
+
+\subsection{Point out at least three layer types you used in your model and explain what they are used for.}
+
+\subparagraph{}
+
+Lorem ipsum
+
+\subsection{How did you improve your model for higher accuracy?}
+
+\subparagraph{}
+
+Lorem ipsum
+
+\section{Keras RNN (15 pts)}
+
+\subsection{What is the purpose of the embedding layer?}
+
+\subparagraph{}
+
+Lorem ipsum
+
+\subsection{What is the effect of the hidden dimension size in LSTM?}
+
+\subparagraph{}
+
+Lorem ipsum
+
+\subsection{Replace LSTM with GRU and compare their performance.}
+
+\subparagraph{}
+
+Lorem ipsum
+
+\end{document}
