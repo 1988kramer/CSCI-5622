@@ -46,6 +46,8 @@ class CNN:
         self.test_x = test_x.reshape(test_x.shape[0], width, height, 1)
         input_shape = (width, height, 1)
         # normalize data to range [0, 1]
+        self.train_x = self.train_x.astype('float32')
+        self.test_x = self.test_x.astype('float32')
         self.train_x /= 255
         self.test_x /= 255
 
@@ -58,11 +60,13 @@ class CNN:
         self.model.add(Conv2D(32, kernel_size=(4, 4), 
                          activation='relu', 
                          input_shape=input_shape))
-        self.model.add(Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(Conv2D(64, (4, 4), activation='relu')) 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
-        #self.model.add(Dropout(0.25))
+        self.model.add(Dropout(0.25))
         self.model.add(Flatten())
         self.model.add(Dense(128, activation='relu'))
+        self.model.add(Dropout(0.5)) 
+        self.model.add(Dense(64, activation='relu'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(10, activation='softmax'))
 
@@ -82,8 +86,7 @@ class CNN:
                   batch_size=self.batch_size, 
                   epochs=self.epochs, 
                   verbose=1,
-                  validation_split=0.1,
-                  shuffle=True)
+                  validation_data=(self.test_x, self.test_y))
 
     def evaluate(self):
         '''
@@ -102,7 +105,7 @@ if __name__ == '__main__':
     data = Numbers("../data/mnist.pkl.gz")
     #print(data.train_x.shape)
 
-    cnn = CNN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y)
+    cnn = CNN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y, 20)
     cnn.train()
     acc = cnn.evaluate()
     print(acc)
