@@ -33,11 +33,11 @@ def split_cv(length, num_folds):
     fold_size = int(length / num_folds)
     test_start = 0 # starting index for the test fold
     for j in range(num_folds):
-        for i in range(length):
+        for i in indices:
             if i in range(test_start, test_start + fold_size):
-                splits[j].test.append(indices[i])
+                splits[j].test.append(i)
             else:
-                splits[j].train.append(indices[i])
+                splits[j].train.append(i)
         test_start += fold_size
 
 
