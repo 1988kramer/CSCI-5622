@@ -2,7 +2,7 @@ import numpy
 from keras.datasets import imdb
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.layers import LSTM
+from keras.layers import LSTM, GRU
 from keras.layers.embeddings import Embedding
 from keras.preprocessing import sequence
 
@@ -35,7 +35,7 @@ class RNN:
         # TODO:build model
         self.model = Sequential()
         self.model.add(Embedding(dict_size, 128))
-        self.model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
+        self.model.add(GRU(128, dropout=0.2, recurrent_dropout=0.2))
         self.model.add(Dense(1, activation='sigmoid'))
 
         self.model.compile(loss='binary_crossentropy',

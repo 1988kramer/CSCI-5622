@@ -48,8 +48,8 @@ class CNN:
         # normalize data to range [0, 1]
         self.train_x = self.train_x.astype('float32')
         self.test_x = self.test_x.astype('float32')
-        self.train_x /= 255
-        self.test_x /= 255
+        #self.train_x /= 255
+        #self.test_x /= 255
 
         # TODO: one hot encoding for train_y and test_y
         self.train_y = to_categorical(train_y)
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     data = Numbers("../data/mnist.pkl.gz")
     #print(data.train_x.shape)
 
-    cnn = CNN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y, 10, 64)
+    cnn = CNN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y, 10, 256)
     cnn.train()
     acc = cnn.evaluate()
     print(acc)

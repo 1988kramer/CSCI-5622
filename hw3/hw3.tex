@@ -102,17 +102,19 @@ To improve accuracy I increased the size of the filters in the convolutional lay
 
 \subparagraph{}
 
+As can be seen in the table below, for two out of the three activation functions tested, smaller batch sizes seem to result in a small increase in accuracy. However, smaller batch sizes also result in a longer training process. Sigmoid activation has the highest accuracy for this task, followed closely by ReLU, and then tanh. Interestingly, sigmoid only has higher accuracy for smaller batch sizes. When the batch size reaches 256 sigmoid has the lowest accuracy. Note the data below was taken after only 10 training epochs to save time. When the number of epochs is increased to 15, ReLU activation with a batch size of 128 is able to reach over 0.99 accuracy. 
+
 \begin{center}
 \begin{tabular}{ |c|c|c| }
 	\hline
 	batch size & activation & accuracy \\
-	256 & relu & 0.9738 \\
-	128 & relu & 0.9792 \\
-	64 & relu & 0.982 \\
+	256 & ReLU & 0.9738 \\
+	128 & ReLU & 0.9792 \\
+	64 & ReLU & 0.982 \\
 	\hline
-	256 & sigmoid & 0.1064 \\
-	128 & sigmoid & 0.1064 \\
-	64 & sigmoid & 0.1064 \\
+	256 & sigmoid & 0.9692 \\
+	128 & sigmoid & 0.9791 \\
+	64 & sigmoid & 0.983 \\
 	\hline
 	256 & tanh & 0.9726 \\
 	128 & tanh & 0.9775 \\
@@ -133,12 +135,12 @@ The embedding layer maps real words or phrases from the examples to vectors of r
 
 \subparagraph{}
 
-Changing the hidden dimension size in the LSTM layer both changes the number of outputs from the LSTM layer and the number of memory units in the LSTM cell.
+Changing the hidden dimension size in the LSTM layer both changes the number of outputs from the LSTM layer and the number of memory units in the LSTM cell. When the LSTM layer has a hidden dimension of 128, accuracy is 0.847. When the hidden layer size is increased to 256 accuracy .822. When the hidden layer size is decreased to 64 the accuracy .834. 
 
 \subsection{Replace LSTM with GRU and compare their performance.}
 
 \subparagraph{}
 
-Lorem ipsum
+When used with the same hyperparameters over one training epoch, the LSTM layer performs better than the GRU layer. The LSTM achieves an accuracy of 0.847 whilte the GRU layer is only able to reach 0.814. 
 
 \end{document}
