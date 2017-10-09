@@ -57,16 +57,16 @@ class CNN:
 
         # TODO: build you CNN model
         self.model = Sequential()
-        self.model.add(Conv2D(32, kernel_size=(4, 4), 
-                         activation='relu', 
+        self.model.add(Conv2D(32, kernel_size=(5, 5),
+                         strides=(1,1), 
+                         activation='sigmoid', 
                          input_shape=input_shape))
-        self.model.add(Conv2D(64, (4, 4), activation='relu')) 
+        self.model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2)))
+        self.model.add(Conv2D(64, (5, 5), activation='sigmoid')) 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
         self.model.add(Flatten())
-        self.model.add(Dense(128, activation='relu'))
-        self.model.add(Dropout(0.5)) 
-        self.model.add(Dense(64, activation='relu'))
+        self.model.add(Dense(1000, activation='sigmoid'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(10, activation='softmax'))
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     data = Numbers("../data/mnist.pkl.gz")
     #print(data.train_x.shape)
 
-    cnn = CNN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y, 20)
+    cnn = CNN(data.train_x[:args.limit], data.train_y[:args.limit], data.test_x, data.test_y, 10, 64)
     cnn.train()
     acc = cnn.evaluate()
     print(acc)

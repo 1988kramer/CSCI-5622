@@ -90,19 +90,36 @@ Increasing the number of training epochs increases testing and training accuracy
 
 \subparagraph{}
 
-Lorem ipsum
+My network architecture makes use of convolutional, max pooling, dense, and dropout layers. Convolutional layers convolve a series of filters of some fixed dimension across the full depth of the input to the layer. The results from each filter passed through an activation function and then on to the next layer. Max pooling layers convolve a single filter of a fixed dimension across each layer of the input. Each pixel in the output of this layer is the max value found in the filter at the corresponding position on the input. For dense, or fully connected layers, the output of every cell in the prior layer is connected to every cell in the fully connected layer with a certain weight and bias. The summed values in each cell are passed through an activation function and then on to the next layer. Finally, dropout layers randomly set a fraction of their input units to zero at each update during training. This has the effect of reducing overfitting.
 
 \subsection{How did you improve your model for higher accuracy?}
 
 \subparagraph{}
 
-Lorem ipsum
+To improve accuracy I increased the size of the filters in the convolutional layers from 3x3 to 5x5. I also increased the number of nodes in the dense layer. Lastly, I decreased the size of the pooling filters between after the convolutional layers.
 
 \subsection{Try different activation functions and batch sizes. Show the corresponding accuracy.}
 
 \subparagraph{}
 
-Lorem ipsum
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+	\hline
+	batch size & activation & accuracy \\
+	256 & relu & 0.9738 \\
+	128 & relu & 0.9792 \\
+	64 & relu & 0.982 \\
+	\hline
+	256 & sigmoid & 0.1064 \\
+	128 & sigmoid & 0.1064 \\
+	64 & sigmoid & 0.1064 \\
+	\hline
+	256 & tanh & 0.9726 \\
+	128 & tanh & 0.9775 \\
+	64 & tanh & .9801 \\
+	\hline
+\end{tabular}
+\end{center}
 
 \section{Keras RNN (15 pts)}
 
@@ -110,13 +127,13 @@ Lorem ipsum
 
 \subparagraph{}
 
-Lorem ipsum
+The embedding layer maps real words or phrases from the examples to vectors of real numbers. This means the examples are transformed from a vector space with one dimension per word (or n-gram) to a continuous space with much lower dimensionality.
 
 \subsection{What is the effect of the hidden dimension size in LSTM?}
 
 \subparagraph{}
 
-Lorem ipsum
+Changing the hidden dimension size in the LSTM layer both changes the number of outputs from the LSTM layer and the number of memory units in the LSTM cell.
 
 \subsection{Replace LSTM with GRU and compare their performance.}
 
