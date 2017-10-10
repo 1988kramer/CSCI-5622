@@ -10,7 +10,7 @@ class RNN:
     '''
     RNN classifier
     '''
-    def __init__(self, train_x, train_y, test_x, test_y, dict_size=5000, example_length=500, embedding_length=32, epochs=1, batch_size=128):
+    def __init__(self, train_x, train_y, test_x, test_y, dict_size=20000, example_length=80, embedding_length=32, epochs=15, batch_size=32):
         '''
         initialize RNN model
         :param train_x: training data
@@ -52,8 +52,7 @@ class RNN:
         self.model.fit(self.train_x, self.train_y,
                        batch_size=self.batch_size,
                        epochs=self.epochs,
-                       validation_split=0.1,
-                       shuffle=True)
+                       validation_data=(self.test_x, self.test_y))
 
     def evaluate(self):
         '''
