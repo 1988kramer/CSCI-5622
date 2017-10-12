@@ -96,7 +96,7 @@ My network architecture makes use of convolutional, max pooling, dense, and drop
 
 \subparagraph{}
 
-To improve accuracy I increased the size of the filters in the convolutional layers from 3x3 to 5x5. I also increased the number of nodes in the dense layer. Lastly, I decreased the size of the pooling filters between after the convolutional layers.
+To improve accuracy I increased the size of the filters in the convolutional layers from 3x3 to 5x5. I also increased the number of nodes in the dense layer. Lastly, I decreased the size of the pooling filters after the convolutional layers.
 
 \subsection{Try different activation functions and batch sizes. Show the corresponding accuracy.}
 
@@ -135,12 +135,12 @@ The embedding layer maps real words or phrases from the examples to vectors of r
 
 \subparagraph{}
 
-Changing the hidden dimension size in the LSTM layer both changes the number of outputs from the LSTM layer and the number of memory units in the LSTM cell. When the LSTM layer has a hidden dimension of 128, accuracy is 0.847. When the hidden layer size is increased to 256 accuracy .822. When the hidden layer size is decreased to 64 the accuracy .834. 
+Changing the hidden dimension size in the LSTM layer both changes the number of outputs from the LSTM layer and the number of memory units in the LSTM cell. When the LSTM layer has a hidden dimension of 128, accuracy is 0.8902 after one epoch. When the hidden layer size is increased to 256 accuracy falls to .8789. When the hidden layer size is decreased to 64 the accuracy falls to .8868. So a hidden dimension size of 128 seems to be nearly optimal for the architecture I used.
 
 \subsection{Replace LSTM with GRU and compare their performance.}
 
 \subparagraph{}
 
-When used with the same hyperparameters over one training epoch, the LSTM layer performs better than the GRU layer. The LSTM achieves an accuracy of 0.847 whilte the GRU layer is only able to reach 0.814. 
+When used with the same hyperparameters over one training epoch, the LSTM layer performs better than the GRU layer. The LSTM achieves an accuracy of 0.8902 after one epoch while the GRU layer is only able to reach 0.8755. 
 
 \end{document}
