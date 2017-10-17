@@ -40,16 +40,16 @@ def find_support(x, y, w, b, tolerance=0.001):
 
     support = set()
     normW = np.linalg.norm(w)
-    distances = np.zeros(len(x[0]))
+    distances = np.zeros(len(x))
     i = 0
     minDist = sys.float_info.max
     # calculate distance between each point and plane defined by w
     # keeping track of the minimum distance
     # should points on the wrong side be counted?
     for xi, yi in zip(x,y):
-    	temp = xi * w + b
+    	temp = np.add(np.dot(xi, np.transpose(w)), b)
     	distances[i] = abs(temp) / normW
-    	if yi * temp >= 0: # might want to change this to > instead of >=
+    	if np.dot(yi, temp) >= 0: # might want to change this to > instead of >=
     		if distances[i] < minDist:
     			minDist = distances[i]
     	# mark instances on the wrong side of the plane as negative
@@ -59,8 +59,8 @@ def find_support(x, y, w, b, tolerance=0.001):
     # loop through calculated distances and add indices of all distances that
     # equal minDist to the set of support vectors
     for j in range(0, len(distances)):
-    	if np.isclose(distances[i], minDist, atol=tolerance):
-    		support.add(i)
+    	if np.isclose(distances[j], minDist, atol=tolerance):
+    		support.add(j)
 
     return support
 
@@ -75,7 +75,7 @@ def find_slack(x, y, w, b):
     slack = set()
     i = 0
     for xi, yi in zip(x,y):
-    	if yi * (xi * w + b) < 0:
+    	if yi * np.add(np.dot(xi, np.transpose(w)), b) < 0:
     		slack.add(i)
     	i += 1
     return slack
