@@ -27,10 +27,35 @@ def weight_vector(x, y, alpha):
     """
 
     w = np.zeros(len(x[0]))
-    # TODO: IMPLEMENT THIS FUNCTION
+    # iterate over examples i = 0 to m
+    # repeat until KKT conditions are met
+    #	choose j randomly from the m-1 other options
+    #	update alpha i and j
+    # Find w, b based on stationarity conditions
+    
     return w
 
+def calcAlphas(ai_old, aj_old, xi, xj, yi, yj, w, b):
+	# not super confident about the error calculation here
+	Ei = np.add(np.dot(xi, np.transpose(w)), b) - yi
+	Ej = np.add(np.dot(xj, np.transpose(w)), b) - yj
 
+	eta = (2 * xi * xj) - (xi * xi) - (xj * xj)
+
+	aj_new = aj_old - yi * (((Ei - Ej)) / eta)
+	ai_new = ai_old + ((yi * yj) * (aj_old - aj_new))
+
+	return ai_new, aj_new
+
+def KKT(x, y, alpha, w, b, zeta, i):
+	temp = y[i]*(np.add(np.dot(x[i], np.transpose(w)), b))
+	if temp < 1 - zeta[i]:
+		return False
+	if np.sum(alpha * y) != 0:
+		return False
+	if alpha[i] * (temp + zeta[i]) != 0:
+		return False
+	return True
 
 def find_support(x, y, w, b, tolerance=0.001):
     """
