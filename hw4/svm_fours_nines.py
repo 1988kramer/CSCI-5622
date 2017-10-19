@@ -6,6 +6,7 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
 
+
 class FoursAndNines:
 	"""
 	Class to store MNIST data
@@ -67,9 +68,8 @@ if __name__ == "__main__":
 	# optimial hyperparameters for the given model (e.g. C for linear kernel, C and p for polynomial kernel, and C and gamma for RBF).
 	
 	# need to add polynomial
-	tuned_params = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]}, 
-					{'kernel': ['linear'], 'C': [1, 10, 100, 1000]},
-					{'kernel': ['poly'], 'C': [1, 10, 100, 1000], 'degree': [3, 5, 7, 9]}]
+	'''
+	tuned_params = [{'kernel': ['poly'], 'C': [1, 10, 100, 1000], 'degree': [2, 3, 4]}]
 
 	scores = ['precision']
 
@@ -100,13 +100,37 @@ if __name__ == "__main__":
 		y_pred = classifier.predict(data.x_test)
 		print(classification_report(data.y_test, y_pred))
 		print()
-	
+	'''
 	# -----------------------------------
 	# Plotting Examples
 	# -----------------------------------
-
+	# use svc.get_params to get weights
 	# Display in on screen
-	#mnist_digit_show(data.x_train[ 0,:])
+	
+	lin = SVC(kernel='linear', C=1)
+	RBF = SVC(kernel='rbf', gamma=.001, C=1000)
+	poly = SVC(kernel='poly', degree=2, C=1000)
+	print("training linear")
+	lin.fit(data.x_train, data.y_train)
+	print("training RBF")
+	RBF.fit(data.x_train, data.y_train)
+	print("training polynomial")
+	poly.fit(data.x_train, data.y_train)
+	print("testing")
+	lin_pred = lin.predict(data.x_test)
+	RBF_pred = RBF.predict(data.x_test)
+	poly_pred = poly.predict(data.x_test)
+	print()
+	print("linear results")
+	print(classification_report(data.y_test, lin_pred))
+	print()
+	print("RBF results")
+	print(classification_report(data.y_test, RBF_pred))
+	print()
+	print("poly results")
+	print(classification_report(data.y_test, poly_pred))
+
+	
 
 	# Plot image to file
 	#mnist_digit_show(data.x_train[1,:], "mnistfig.png")
