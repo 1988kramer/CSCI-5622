@@ -1,0 +1,133 @@
+\documentclass[11pt]{article}
+
+% ==== PACKAGES ==== %
+% \usepackage{fullpage}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{bbm}
+\usepackage[letterpaper, margin=1in]{geometry}
+
+% ==== MARGINS ==== %
+% \pagestyle{empty}
+% \setlength{\oddsidemargin}{0in}
+% \setlength{\textwidth}{6.8in}
+% \setlength{\textheight}{9.5in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSCI 5622}
+\lhead{Homework 1}
+\rfoot{Page \thepage}
+
+
+\newtheorem*{solution*}{Solution}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{corollary}[lemma]{Corollary}
+\lstset{moredelim=[is][\bfseries]{[*}{*]}}
+
+% ==== DOCUMENT PROPER ==== %
+\begin{document}
+
+\thispagestyle{empty}
+
+% --- Header Box --- %
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+
+\begin{center}\framebox{\parbox{\boxlength}{\bf
+      Machine Learning \hfill Homework 2\\
+      CSCI 5622 Fall 2017 \hfill Due Date: Sep 29, 2017\\
+      Name: Andrew Kramer \hfill CU identitykey: ankr1041
+}}
+\end{center}
+
+
+
+
+\section{Logistic Regression (15 pts)}
+
+\subsection{What is the role of learning rate on the efficiency of convergence during training?}
+
+\subparagraph{}
+
+Smaller values of the learning rate cause the training accuracy to converge more slowly, but larger eta values can cause the training accuracy to be more erratic. For instance, a learning rate of .01 will converge to a stable value within 6 epochs, while a learning rate of .1 will converge in 4 epochs. However, a value that is too high will cause the accuracy to vary erratically between epochs, delaying convergence. For example, a learning rate of 1 will not converge until 10 epochs. Further, a learning rate of 1 will have less stability between epochs. See the figure below for details.
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{accuracy-eta.png}
+	\label{fig:graph}
+\end{figure}
+
+\subsection{What is the role of the number of training epochs on test accuracy?}
+
+\subparagraph{}
+
+In general, the number of training epochs increases test accuracy. However, after a certain number of epochs the additional training epochs no longer have any beneficial effect. For instance, in the figure below testing accuracy tends to increase until about 9 epochs, after which a maximum stable accuracy is reached.
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{accuracy-epoch.png}
+	\label{fig:graph}
+\end{figure}
+
+\section{Feature Engineering (15 pts)}
+
+\subsection{What custom features did you try? How did those additional features affect the model performance? Why do you think those additional features helped or hurt performance?}
+
+\subparagraph{}
+
+I added a feature that transformed the example documents into a bag of words representation, a feature that returned a simple count of the negative words in each example, a feature that returns a count of the unique words in each example (the example's vocabulary), and a feature that returns a term frequency-inverse document frequency (tf-idf) representation of each document. Note the negative words feature is commented out in the final implementation because it requires an external list of negative words, which I recently found out are not allowed. Surprisingly, the vocab and negative words features had training and test accuracy of around 0.5. This is similar to the given text length transformer and, since this was for a binary classifier, it is no better than randomly classifying the examples. Additionally, the performance did not improve when these features were used in combination. I believe this is because the vocabulary and negative word count features were too simplistic to be of much use when classifying examples. Interestingly, the bag-of-words transform had a training accuracy of 1.0, but a test accuracy of .498. This appears to be a case of over-fitting. The bag-of-words representation encodes sufficient information to classify the training data but has little to no predictive power. Surprisingly the tf-idf feature performed better than any of the others, acheiving a test accuracy of 0.83 and a training accuracy of 1. This is likely because the tf-idf is the most information-dense of any of the methods, providing a statistic that reflects the relative importance of each word in a document.
+
+\subsection{What are unigrams, bi-grams, and n-grams? When you added those features to the Feature Union, what happened to the model performance? Why do these features help or hurt?}
+
+\subparagraph{}
+
+An n-gram is a contiguous sequence of n words in a document. So the sentence: ``a bi-gram is a sequence of two words'' contains the following bi-grams: ``a bigram,'' ``bi-gram is,'' ``is a,'' ``a sequence,'' ``sequence of,'' ``of two,'' and ``two words.'' When I added features that returned counts of the bi or tri-grams in the examples, performance improved markedly. When the features were used alone, training accuracy increased to 1.0 and test accuracy was .785 for bi-grams and .72 for trigrams. When the bi and trigrams were used together test accuracy was .787. When they were used with the other transforms accuracy was only .801, which is less than the best single transform, tf-idf, on its own. These features increased accuracy because they preserve some information about the order of words in the documents. Bi-grams performed better than tri-grams because they encode minimal additional information, but they vastly increase the number of features because. So it may be difficult to extract that additional information from the huge number of features.
+
+\section{Gradient Descent Learning Rule (20 pts)}
+
+\subsection{Derive the negative log likelihood for multi-class logistic regression:}
+
+\begin{align*}
+	L (\beta) = P(Y \vert X, \beta) &= \prod_{j = 1}^{C} P(y_{j} \vert x_{j}, \beta)\\
+	-\ell(\beta) = -\log P(Y \vert X, \beta) &= -\sum_{j = 1}^{C} \log P(y_{j} \vert x_{j}, \beta)\\
+	-\ell(\beta) &= -\sum_{i:y=1}\log P(y = 1 \vert x_{i}, \beta) - ... - \sum_{i:y=C}\log P(y = C \vert x_{i}, \beta)\\
+	&= -\sum_{j = 1}^{C} \sum_{i:y=j} \log P(y = j \vert x_{i}, \beta)\\
+	&= -\sum_{i = 1}^{N} \sum_{k=1}^{C} \mathbbm{1}[y_{i} = k] \log \frac{\exp(\beta_{k}^{T}x_{i})}{\sum_{j=1}^{C}\exp(\beta_{j}^{T}x_{i})}\\
+\end{align*}
+
+
+\subsection{Find $\nabla \beta_{c,j}$ for a multi-class logistic regression model:}
+
+\begin{align*}
+	\nabla \beta_{c,j} &= \frac{\partial}{\partial \beta_{j}} -\log(p) \text{   where } p=\frac{\exp(\beta_{i}^{T})x}{\sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)}\\
+	\frac{\partial}{\partial \beta_{j}} -\log(p) &= -\frac{1}{p} \frac{\partial}{\partial \beta_{j}}p\\
+	\frac{\partial}{\partial \beta_{j}}p &= \frac{\partial}{\partial \beta_{j}} \frac{\exp(\beta_{i}^{T})x}{\sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)}\\
+	\text{By the quotient rule:}&\\
+	\text{if  }f &= \frac{g}{h} \text{  then  }f^{\prime}=\frac{g^{\prime}h-h^{\prime}g}{h^{2}}\\
+	g &= \exp(\beta_{i}^{T}x)\\
+	g^{\prime} &= 
+		\begin{cases}
+			x\exp(\beta_{i}^{T}x) & i = j\\
+	 		0 & i \neq j
+	 	\end{cases}
+	\\
+	h &= \sum_{c^{\prime}=1}^{C}\exp(\beta_{c^{\prime}}^{T}x)\\
+	h^{\prime} &= x\exp(\beta_{j}^{T}x)\\
+	\text{So the derivative of p is:}&\\
+	\frac{\partial}{\partial \beta_{j}}p &= \frac{\mathbbm{1}[i=j]x \exp(\beta_{i}^{T}x)\sum_{c^{\prime}=1}^{C} \exp(\beta_{c^{\prime}}^{T}x)-x \exp(\beta_{j}^{T}x) \exp(\beta_{i}^{T}x)}{\big[\sum_{c^{\prime}}^{C} \exp(\beta_{c^{\prime}}^{T}x)\big]^{2}}\\
+	\text{Putting it all together:}&\\
+	\frac{\partial}{\partial \beta_{j}} -\log(p)&=-\frac{1}{p}\frac{\partial}{\partial \beta_{j}}p\\
+	&= -\frac{\sum_{c^{\prime}}^{C} \exp(\beta_{c_{\prime}}^{T})}{\exp(\beta_{i}^{T}x)} \cdot \frac{\mathbbm{1}[i=j]x \exp(\beta_{i}^{T}x)\sum_{c^{\prime}=1}^{C} \exp(\beta_{c^{\prime}}^{T}x)-x \exp(\beta_{j}^{T}x) \exp(\beta_{i}^{T}x)}{\big[\sum_{c^{\prime}}^{C} \exp(\beta_{c^{\prime}}^{T}x)\big]^{2}}\\
+	&= -x \bigg[\mathbbm{1}[i=j]-\frac{\exp(\beta_{j}^{T}x)}{\sum_{c^{\prime}=1}^{C} \exp(\beta_{c^{\prime}}^{T}x)} \bigg]\\
+\end{align*}
+
+\end{document}

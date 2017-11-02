@@ -25,7 +25,7 @@ class Network:
     def forward_prop(self, a):
         """
         memory aware forward propagation for testing
-        only.  back_prop implements it's own forward_prop
+        only.  back_prop implements its own forward_prop
         """
         for (W,b) in zip(self.weights, self.biases):
             a = self.g(np.dot(W, a) + b)
@@ -38,10 +38,10 @@ class Network:
         """
         return (a - y)
 
-    def SGD_train(self, train, epochs, eta, lam=0.0, verbose=True, test=None):
+    def SGD_train(self, train, epochs, eta, lam, verbose=True, test=None):
         """
         SGD for training parameters
-        epochs is the number of epocs to run
+        epochs is the number of epochs to run
         eta is the learning rate
         lam is the regularization parameter
         If verbose is set will print progressive accuracy updates
@@ -54,8 +54,14 @@ class Network:
                 xk = train[perm[kk]][0]
                 yk = train[perm[kk]][1]
                 dWs, dbs = self.back_prop(xk, yk)
-                # TODO: Add L2-regularization
-                self.weights = [W - eta*dW for (W, dW) in zip(self.weights, dWs)]
+                
+                # regularization step
+                #for dW, W in zip(dWs, self.weights):
+                 #   dW = dW + (lam * W) #/ n_train
+                    #(W.shape, dW.shape)
+
+                # update weights
+                self.weights = [W - (eta*dW) - (eta*lam*W) for (W, dW) in zip(self.weights, dWs)]
                 self.biases = [b - eta*db for (b, db) in zip(self.biases, dbs)]
             if verbose:
                 if epoch==0 or (epoch + 1) % 15 == 0:
@@ -77,19 +83,24 @@ class Network:
         a_list = [a]
         z_list = [np.zeros(a.shape)] # Pad with throwaway so indices match
 
+        # forward propagation step
         for W, b in zip(self.weights, self.biases):
+            #print(b.shape, W.shape)
             z = np.dot(W, a) + b
             z_list.append(z)
             a = self.g(z)
             a_list.append(a)
 
         # Back propagate deltas to compute derivatives
-        # TODO delta  =
+        delta  = -1 * np.multiply((y - a_list[self.L-1]), 
+                                   self.g_prime(z_list[self.L-1]))
         for ell in range(self.L-2,-1,-1):
-            # TODO db_list[ell] =
-            # TODO dW_list[ell] =
-            # TODO delta =
-            pass
+            dW_list[ell] = np.dot(delta, np.transpose(a_list[ell]))
+            db_list[ell] = np.squeeze(np.sum(delta, axis=1)) # may need to switch sum direction
+            db_list[ell] = np.expand_dims(db_list[ell], axis=1)
+            delta = np.multiply(np.dot(
+                    np.transpose(self.weights[ell]), delta), 
+                    self.g_prime(z_list[ell]))
 
         return (dW_list, db_list)
 
@@ -109,7 +120,7 @@ class Network:
         training example.
         """
         a = self.forward_prop(x)
-        return 0.5*np.linalg.norm(a-y)**2
+        return 0.5*np.linalg.norm(a-y)**2 
 
 def sigmoid(z, threshold=20):
     z = np.clip(z, -threshold, threshold)
@@ -134,10 +145,12 @@ def mnist_digit_show(flatimage, outname=None):
 
 if __name__ == "__main__":
 
-    f = gzip.open('../data/tinyTOY.pkl.gz', 'rb') # change path to ../data/tinyMNIST.pkl.gz after debugging
+    f = gzip.open('../data/tinyMNIST.pkl.gz', 'rb') # change path to ../data/tinyMNIST.pkl.gz after debugging
     u = pickle._Unpickler(f)
     u.encoding = 'latin1'
     train, test = u.load()
+    #print(np.array(train[0][0]).shape)
+    #print(np.array(train[0][1]).shape)
 
-    nn = Network([2,30,2])
+    nn = Network([196,128,10])
     nn.SGD_train(train, epochs=200, eta=0.25, lam=0.0, verbose=True, test=test)

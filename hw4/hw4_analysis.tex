@@ -1,0 +1,152 @@
+\documentclass[11pt]{article}
+
+% ==== PACKAGES ==== %
+% \usepackage{fullpage}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage[letterpaper, margin=1in]{geometry}
+
+% ==== MARGINS ==== %
+% \pagestyle{empty}
+% \setlength{\oddsidemargin}{0in}
+% \setlength{\textwidth}{6.8in}
+% \setlength{\textheight}{9.5in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSCI 5622}
+\lhead{Homework 1}
+\rfoot{Page \thepage}
+
+
+\newtheorem*{solution*}{Solution}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{corollary}[lemma]{Corollary}
+\lstset{moredelim=[is][\bfseries]{[*}{*]}}
+
+% ==== DOCUMENT PROPER ==== %
+\begin{document}
+
+\thispagestyle{empty}
+
+% --- Header Box --- %
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+
+\begin{center}\framebox{\parbox{\boxlength}{\bf
+      Machine Learning \hfill Homework 1\\
+      CSCI 5622 Fall 2017 \hfill Due Time Nov 10, 2017\\
+      Name: Andrew Kramer \hfill CU identitykey: ankr1041
+}}
+\end{center}
+
+
+
+
+\section{Support Vector Machines (40pts)}
+
+\subsection{Comment on the experiments you ran with GridSearch and the optimal hyperparameters you found}
+
+\subparagraph{}
+
+A linear kernel was tested with penalty parameters of 1, 10, 100, and 1000. The highest accuracy for the linear kernel was obtained with a penalty parameter of 1, but overall the maximum accuracy of 0.964 obtained by the linear kernel was not competitive with the RBF and polynomial kernels.
+
+An RBF kernel was tested with penalty parameters of 1, 10, 100, and 1000 and gamma values of 0.0001 and 0.001. The maximum accuracy of 0.985 was obtained with a penalty parameter of 1000 and gamma of 0.001. 
+
+A polynomial kernel was tested with degree of 2, 3, 4, and 5 with penalty parameters of 1, 10, 100, and 1000. The maximum accuracy of 0.991 was obtained with a degree of 2 and penalty parameter of 1000. See the graphs below for details.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{linear.png}
+		\caption{linear kernel results}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{RBF.png}
+		\caption{RBF kernel results}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{poly.png}
+		\caption{polynomial kernel results}
+	\end{subfigure}
+	\caption{results for all tested hyperparameter combinations}
+\end{figure}
+
+\subsection{Comment on classification performance for each model for optimal parameters by either testing on a hold-out set or performing cross-validation.}
+
+\subparagraph{}
+
+The highest performing configurations found in the previous section were trained and tested on separate datasets. The RBF and polynomial kernels achieved 0.99 testing accuracy for both the 4 and 9 classes. The linear kernel achieved a testing accuracy of 0.97 for 4s, 0.98 for 9s, and 0.97 average.
+
+\subsection{Give examples in picture form of support vectors from each class when using a polynomial kernel.}
+
+\subparagraph{}
+
+The following examples were obtained by randomly sampling from the set of support vectors found when training a classifier with a 2nd degree polynomial kernel and penalty parameter of 1000.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.2\linewidth}
+		\includegraphics[width=\linewidth]{mnistfig8.png}
+		\caption{A nine}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.2\linewidth}
+		\includegraphics[width=\linewidth]{mnistfig514.png}
+		\caption{A second nine}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.2\linewidth}
+		\includegraphics[width=\linewidth]{mnistfig388.png}
+		\caption{A four}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.2\linewidth}
+		\includegraphics[width=\linewidth]{mnistfig199.png}
+		\caption{Another four}
+	\end{subfigure}
+\end{figure}
+
+\section{Learnability (25pts)}
+
+\subsection{Give a bound on the number of randomly drawn training examples sufficient to assure that for any target class c in C, any consistent learner will output a hypothesis with error at most 0.15 with probability 0.95}
+
+\begin{align*}
+	m &\geq \frac{1}{\epsilon}\bigg(\ln \vert H \vert + \ln\frac{1}{\delta}\bigg)\\
+	\\
+	\delta &= 1-0.95 = 0.05\\
+	\epsilon &= 0.15\\
+	\\
+	\vert H \vert &= \text{number of possible triangles in the space}\\
+	\vert H \vert &= {{\text{possible vertices}}\choose{3}}\\
+	\text{possible vertices} &= 100^2 = 10000\\
+	\vert H \vert &= {{10000}\choose{3}}=166616670000\\
+	\\
+	m &\geq \frac{1}{.15}\bigg(\ln(166616670000) + \ln\frac{1}{0.05}\bigg)\\
+	m &\geq 192\\
+\end{align*}
+
+\section{VC Dimension (20pts)}
+
+\subsection{Consider the class of hypotheses defined by circles centered at the origin. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and regorously prove the VC dimension of this family of classifiers.}
+
+The VC dimension for origin-centered circles is 2.
+
+Lower bound: Consider a set of 2 points with radii $r_1 < r_2$ from the origin. There exists a hypothesis $h$ that can label the points at $r_1$ positive while $r_2$ is labeled negative or vice versa. A hypothesis also exists that can label both points positive or negative. So there exists a set of 2 points that can be shattered by an origin-centered circle.
+
+Upper bound: With a set of 3 points at radii $r_1 \leq r_2 \leq r_3$ from the origin no hypothesis $h$ will be able to label $r_1$ and $r_3$ as positive while also labeling $r_2$ negative. Thus, no set of three points can be shatered by an origin centered circle.
+
+\end{document}

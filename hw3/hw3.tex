@@ -1,0 +1,146 @@
+\documentclass[11pt]{article}
+
+% ==== PACKAGES ==== %
+% \usepackage{fullpage}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{bbm}
+\usepackage[letterpaper, margin=1in]{geometry}
+
+% ==== MARGINS ==== %
+% \pagestyle{empty}
+% \setlength{\oddsidemargin}{0in}
+% \setlength{\textwidth}{6.8in}
+% \setlength{\textheight}{9.5in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSCI 5622}
+\lhead{Homework 1}
+\rfoot{Page \thepage}
+
+
+\newtheorem*{solution*}{Solution}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{corollary}[lemma]{Corollary}
+\lstset{moredelim=[is][\bfseries]{[*}{*]}}
+
+% ==== DOCUMENT PROPER ==== %
+\begin{document}
+
+\thispagestyle{empty}
+
+% --- Header Box --- %
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+
+\begin{center}\framebox{\parbox{\boxlength}{\bf
+      Machine Learning \hfill Homework 3\\
+      CSCI 5622 Fall 2017 \hfill Due Date: Oct 13, 2017\\
+      Name: Andrew Kramer \hfill CU identitykey: ankr1041
+}}
+\end{center}
+
+
+
+
+\section{Back Propagation (15 pts)}
+
+\subsection{What is the structure of your neural network (both for tinyTOY and tiny MNIST datasets)? Show the dimensions of the input, hidden, and output layers.}
+
+\subparagraph{}
+
+The neural network for the toy dataset had input dimension of 2, hidden dimension of 30, and output dimension of 2. The neural network for the MNIST dataset had input dimension of 196, hidden dimension of 128, and output dimension of 10.
+
+\subsection{What is the role of the size of the hidden layer on training and testing accuracy?}
+
+\subparagraph{}
+
+Increasing the size of the hidden layer seems to have no affect on the training accuracy. Increasing the size of the hidden layer increases testing accuracy up to a point. Testing accuracy seems to peak with a hidden layer size of 128. Accuracy decreases when hidden layer size is increased beyond this. Accuracy for both training and testing decreases sharply when hidden layer size increases beyond 256. See the chart below for details.
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{hidden-accuracy.png}
+	\label{fig:graph}
+\end{figure}
+
+\subsection{How does the number of epochs affect training and testing accuracy?}
+
+\subparagraph{}
+
+Increasing the number of training epochs increases testing and training accuracy up to a point. For a hidden layer size of 256, training and testing accuracy increase until about 100 epochs, after which point additional epochs don't improve accuracy. Note also that additional epochs beyond this point also do not hurt training accuracy.
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{epochs-accuracy.png}
+	\label{fig:graph}
+\end{figure}
+
+\section{Keras CNN (15 pts)}
+
+\subsection{Point out at least three layer types you used in your model and explain what they are used for.}
+
+\subparagraph{}
+
+My network architecture makes use of convolutional, max pooling, dense, and dropout layers. Convolutional layers convolve a series of filters of some fixed dimension across the full depth of the input to the layer. The results from each filter passed through an activation function and then on to the next layer. Max pooling layers convolve a single filter of a fixed dimension across each layer of the input. Each pixel in the output of this layer is the max value found in the filter at the corresponding position on the input. For dense, or fully connected layers, the output of every cell in the prior layer is connected to every cell in the fully connected layer with a certain weight and bias. The summed values in each cell are passed through an activation function and then on to the next layer. Finally, dropout layers randomly set a fraction of their input units to zero at each update during training. This has the effect of reducing overfitting.
+
+\subsection{How did you improve your model for higher accuracy?}
+
+\subparagraph{}
+
+To improve accuracy I increased the size of the filters in the convolutional layers from 3x3 to 5x5. I also increased the number of nodes in the dense layer. Lastly, I decreased the size of the pooling filters after the convolutional layers.
+
+\subsection{Try different activation functions and batch sizes. Show the corresponding accuracy.}
+
+\subparagraph{}
+
+As can be seen in the table below, for two out of the three activation functions tested, smaller batch sizes seem to result in a small increase in accuracy. However, smaller batch sizes also result in a longer training process. Sigmoid activation has the highest accuracy for this task, followed closely by ReLU, and then tanh. Interestingly, sigmoid only has higher accuracy for smaller batch sizes. When the batch size reaches 256 sigmoid has the lowest accuracy. Note the data below was taken after only 10 training epochs to save time. When the number of epochs is increased to 15, ReLU activation with a batch size of 128 is able to reach over 0.99 accuracy. 
+
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+	\hline
+	batch size & activation & accuracy \\
+	256 & ReLU & 0.9738 \\
+	128 & ReLU & 0.9792 \\
+	64 & ReLU & 0.982 \\
+	\hline
+	256 & sigmoid & 0.9692 \\
+	128 & sigmoid & 0.9791 \\
+	64 & sigmoid & 0.983 \\
+	\hline
+	256 & tanh & 0.9726 \\
+	128 & tanh & 0.9775 \\
+	64 & tanh & .9801 \\
+	\hline
+\end{tabular}
+\end{center}
+
+\section{Keras RNN (15 pts)}
+
+\subsection{What is the purpose of the embedding layer?}
+
+\subparagraph{}
+
+The embedding layer maps real words or phrases from the examples to vectors of real numbers. This means the examples are transformed from a vector space with one dimension per word (or n-gram) to a continuous space with much lower dimensionality.
+
+\subsection{What is the effect of the hidden dimension size in LSTM?}
+
+\subparagraph{}
+
+Changing the hidden dimension size in the LSTM layer both changes the number of outputs from the LSTM layer and the number of memory units in the LSTM cell. When the LSTM layer has a hidden dimension of 128, accuracy is 0.8902 after one epoch. When the hidden layer size is increased to 256 accuracy falls to .8789. When the hidden layer size is decreased to 64 the accuracy falls to .8868. So a hidden dimension size of 128 seems to be nearly optimal for the architecture I used.
+
+\subsection{Replace LSTM with GRU and compare their performance.}
+
+\subparagraph{}
+
+When used with the same hyperparameters over one training epoch, the LSTM layer performs better than the GRU layer. The LSTM achieves an accuracy of 0.8902 after one epoch while the GRU layer is only able to reach 0.8755. 
+
+\end{document}

@@ -3,9 +3,11 @@ import json
 from csv import DictReader, DictWriter
 
 import numpy as np
+import re
 from numpy import array
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction import DictVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -62,7 +64,138 @@ class TextLengthTransformer(BaseEstimator, TransformerMixin):
         return features
 
 # TODO: Add custom feature transformers for the movie review data
+class BagOfWordsifier(BaseEstimator, TransformerMixin):
 
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		features = [dict() for x in range(len(examples))]
+		i = 0
+		for ex in examples:
+			word_vector = re.compile('\b\w+\w').split(str(ex))
+			for word in word_vector:
+				if word in features[i].keys():
+					features[i][word] += 1
+				else:
+					features[i][word] = 1
+			i += 1
+		return features
+
+class NegativeWordCounter(BaseEstimator, TransformerMixin):
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		text_file = open("negative.txt", "r")
+		negativeString = text_file.read()
+		negativeWords = negativeString.split("\n")
+		features = np.zeros((len(examples), 1))
+		i = 0
+		for ex in examples:
+			exString = str(ex).lower()
+			for word in negativeWords:
+				features[i, 0] += exString.count(word)
+			i += 1
+		return features
+
+class VocabularyCounter(BaseEstimator, TransformerMixin):
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		features = [dict() for x in range(len(examples))]
+		i = 0
+		for ex in examples:
+			word_vector = re.compile('\b\w+\w').split(str(ex))
+			for word in word_vector:
+				if word in features[i].keys():
+					features[i][word] += 1
+				else:
+					features[i][word] = 1
+			i += 1
+		vocab = np.zeros((len(examples), 1))
+		i = 0
+		for feature in features:
+			vocab[i] = len(feature.keys())
+			i += 1
+		return vocab
+
+class tfidfifier(BaseEstimator,TransformerMixin):
+    def __init__(self):
+        pass
+
+    def fit(self, examples):
+        return self
+
+    def transform(self, examples):
+        features = [dict() for x in range(len(examples))]
+        vec = TfidfVectorizer(min_df=10)
+        analyze = vec.build_analyzer()
+        i = 0
+        for ex in examples:
+            tfidfVector = analyze(str(ex))
+            for thisVec in tfidfVector:
+                if thisVec in features[i].keys():
+                    features[i][thisVec] += 1
+                else:
+                    features[i][thisVec] = 1
+            i += 1
+        return features
+
+
+class BagOfBigramsifier(BaseEstimator, TransformerMixin):
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		features = [dict() for x in range(len(examples))]
+		bigram_vectorizer = CountVectorizer(ngram_range=(2, 2), token_pattern=r'\b\w+\w', min_df=1)
+		analyze = bigram_vectorizer.build_analyzer()
+		i = 0
+		for ex in examples:
+			bigram_vector = analyze(str(ex))
+			for bigram in bigram_vector:
+				if bigram in features[i].keys():
+					features[i][bigram] += 1
+				else:
+					features[i][bigram] = 1
+			i += 1
+		return features
+
+class BagOfTrigramsifier(BaseEstimator, TransformerMixin):
+	def __init__(self):
+		pass
+
+	def fit(self, examples):
+		return self
+
+	def transform(self, examples):
+		features = [dict() for x in range(len(examples))]
+		trigram_vectorizer = CountVectorizer(ngram_range=(3, 3), token_pattern=r'\b\w+\w', min_df=1)
+		analyze = trigram_vectorizer.build_analyzer()
+		i = 0
+		for ex in examples:
+			trigram_vector = analyze(str(ex))
+			for trigram in trigram_vector:
+				if trigram in features[i].keys():
+					features[i][trigram] += 1
+				else:
+					features[i][trigram] = 1
+			i += 1
+		return features
 
 class Featurizer:
     def __init__(self):
@@ -76,6 +209,30 @@ class Featurizer:
                 ('selector', ItemSelector(key='text')),
                 ('text_length', TextLengthTransformer())
             ])),
+            ('word_bag', Pipeline([
+            	('selector', ItemSelector(key='text')),
+            	('bag_of_words', BagOfWordsifier()),
+            	('vect', DictVectorizer())
+            ])),
+            ('vocab_count', Pipeline([
+                ('selector', ItemSelector(key='text')),
+                ('vocab', VocabularyCounter())
+            ])),
+            ('tfidf', Pipeline([
+            	('selector', ItemSelector(key='text')),
+            	('tfidf-ifier', tfidfifier()),
+                ('vect', DictVectorizer())
+            ])),
+            ('bagOfBiGrams', Pipeline([
+            	('selector', ItemSelector(key='text')),
+            	('bag_of_bigrams', BagOfBigramsifier()),
+            	('vect', DictVectorizer())
+            ])),
+            ('bagOfTriGrams', Pipeline([
+            	('selector', ItemSelector(key='text')),
+            	('bag_of_trigrams', BagOfTrigramsifier()),
+            	('vect', DictVectorizer())
+            ]))
         ])
 
     def train_feature(self, examples):
@@ -101,7 +258,6 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(dataset_x, dataset_y, test_size=0.3, random_state=SEED)
 
     feat = Featurizer()
-
     labels = []
     for l in y_train:
         if not l in labels:
@@ -121,11 +277,9 @@ if __name__ == "__main__":
         'text': [t for t in X_test]
     })
 
-    #print(feat_train)
-    #print(set(y_train))
 
     # Train classifier
-    lr = SGDClassifier(loss='log', penalty='l2', alpha=0.0001, max_iter=15000, shuffle=True, verbose=2)
+    lr = SGDClassifier(loss='log', penalty='l2', alpha=0.0001, max_iter=5000, shuffle=True, verbose=2)
 
     lr.fit(feat_train, y_train)
     y_pred = lr.predict(feat_train)

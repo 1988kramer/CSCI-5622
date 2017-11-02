@@ -29,10 +29,17 @@ def split_cv(length, num_folds):
     splits = [SplitIndices([], []) for _ in range(num_folds)]
     indices = list(range(length))
     random.shuffle(indices)
-    # Finish this function to populate `folds`.
-    # All the indices are split into num_folds folds.
-    # Each fold is the testing set in a split, and the remaining indices
-    # are added to the corresponding training set.
+    
+    fold_size = int(length / num_folds)
+    test_start = 0 # starting index for the test fold
+    for j in range(num_folds):
+        for i in indices:
+            if i in range(test_start, test_start + fold_size):
+                splits[j].test.append(i)
+            else:
+                splits[j].train.append(i)
+        test_start += fold_size
+
 
     return splits
 
@@ -44,10 +51,26 @@ def cv_performance(x, y, num_folds, k):
     accuracy_array = []
 
     for split in splits:
-        # Finish this function to use the training instances 
-        # indexed by `split.train` to train the classifier,
-        # and then store the accuracy 
-        # on the testing instances indexed by `split.test`
+        # initialize lists for training and testing data and labels
+        # may need to use numPy arrays instead of lists
+        train_data = []
+        test_data = []
+        train_labels = []
+        test_labels = []
+        # use indices in split to populate 
+        # training and testing data and label lists
+        for i in split.train:
+            train_data.append(x[i,:])
+            train_labels.append(y[i])
+        for i in split.test:
+            test_data.append(x[i,:])
+            test_labels.append(y[i])
+        # initialize knn using training data
+        knn = Knearest(train_data, train_labels, k)
+        # test against test data
+        confusion = knn.confusion_matrix(test_data, test_labels)
+        # get accuracy
+        accuracy = knn.accuracy(confusion)
         
         accuracy_array.append(accuracy)
 
