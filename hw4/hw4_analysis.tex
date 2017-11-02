@@ -141,12 +141,24 @@ The following examples were obtained by randomly sampling from the set of suppor
 
 \section{VC Dimension (20pts)}
 
-\subsection{Consider the class of hypotheses defined by circles centered at the origin. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and regorously prove the VC dimension of this family of classifiers.}
+\subsection{Consider the class of hypotheses defined by circles centered at the origin. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and rigorously prove the VC dimension of this family of classifiers.}
+\begin{quote}
+	The VC dimension for origin-centered circles is 2.
+	\\
+	\textbf{Lower bound:} Consider a set of 2 points with radii $r_1 < r_2$ from the origin. There exists a hypothesis $h$ that can label the points at $r_1$ positive while $r_2$ is labeled negative or vice versa. A hypothesis also exists that can label both points positive or both points negative. So there exists a set of 2 points that can be shattered by an origin-centered circle.
+	\\
+	\textbf{Upper bound:} With a set of 3 points at radii $r_1 \leq r_2 \leq r_3$ from the origin no hypothesis $h$ will be able to label $r_1$ and $r_3$ as positive while also labeling $r_2$ negative. Thus, no set of three points can be shatered by an origin-centered circle.
+\end{quote}
 
-The VC dimension for origin-centered circles is 2.
+\section{Extra Credit}
 
-Lower bound: Consider a set of 2 points with radii $r_1 < r_2$ from the origin. There exists a hypothesis $h$ that can label the points at $r_1$ positive while $r_2$ is labeled negative or vice versa. A hypothesis also exists that can label both points positive or negative. So there exists a set of 2 points that can be shattered by an origin-centered circle.
-
-Upper bound: With a set of 3 points at radii $r_1 \leq r_2 \leq r_3$ from the origin no hypothesis $h$ will be able to label $r_1$ and $r_3$ as positive while also labeling $r_2$ negative. Thus, no set of three points can be shatered by an origin centered circle.
+\subsection{Consider the class of hypotheses defined by circles anywhere in 2D space. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and rigorously prove the VC dimension if this family of classifiers.}
+\begin{quote}
+	The VC dimension for circles in a 2D plane is 3.
+	\\
+	\textbf{Lower bound:}
+	\\
+	\textbf{Upper bound:}
+\end{quote}
 
 \end{document}
