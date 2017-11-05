@@ -156,9 +156,11 @@ The following examples were obtained by randomly sampling from the set of suppor
 \begin{quote}
 	The VC dimension for circles in a 2D plane is 3.
 	\\
-	\textbf{Lower bound:}
+	\textbf{Lower bound:} Consider 3 points that make up a non-degenerate triangle. A circle centered anywhere in the space can shatter these three points. 
 	\\
-	\textbf{Upper bound:}
+	\textbf{Upper bound:} If there are 4 points that must be labeled the following cases are possible. If the fourth point is inside the convex hull of the other 3 then it is not possible to label the inside points as -1 and the outside points as +1 (or vice versa). In the second case, the 4 points form a convex polygon. It is not possible for one circle to label these points +1, -1, +1, -1 and another circle to label the same points -1, +1, -1, +1.
+
+	Also, in any case a circle in 2D space can be seen as a 2-dimensional classifier. The two dimensions being the radius of the circle and the distance between the origin and the center of the circle. By Radon's theorem, for a d-dimensional classifier there exists a set of $d+1$ points such that every two nonempty subsets can be seperated from each other by a hyperplane. However, no matter which set of $d+2$ points is given, the two subsets of a Radon partition cannot be linearly separated. Therefore the VC dimension of the system is $d+1$, or 3 in this case.
 \end{quote}
 
 \end{document}
