@@ -143,10 +143,17 @@ The following examples were obtained by randomly sampling from the set of suppor
 
 \subsection{Consider the class of hypotheses defined by circles centered at the origin. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and rigorously prove the VC dimension of this family of classifiers.}
 \begin{quote}
+
+	\vspace{3 mm}
+
 	The VC dimension for origin-centered circles is 2.
-	\\
-	\textbf{Lower bound:} Consider a set of 2 points with radii $r_1 < r_2$ from the origin. There exists a hypothesis $h$ that can label the points at $r_1$ positive while $r_2$ is labeled negative or vice versa. A hypothesis also exists that can label both points positive or both points negative. So there exists a set of 2 points that can be shattered by an origin-centered circle.
-	\\
+	
+	\vspace{1 mm}
+
+	\textbf{Lower bound:} Consider a set of 2 points with radii $r_1 < r_2$ from the origin. There exists a hypothesis $h$ that can label the points at $r_1$ positive while $r_2$ is labeled negative or vice versa. A hypothesis also exists that can label both points positive or both points negative. So there exists a set of 2 points that can be shattered by an origin-centered circle. 
+	
+	\vspace{1 mm}
+
 	\textbf{Upper bound:} With a set of 3 points at radii $r_1 \leq r_2 \leq r_3$ from the origin no hypothesis $h$ will be able to label $r_1$ and $r_3$ as positive while also labeling $r_2$ negative. Thus, no set of three points can be shatered by an origin-centered circle.
 \end{quote}
 
@@ -154,12 +161,21 @@ The following examples were obtained by randomly sampling from the set of suppor
 
 \subsection{Consider the class of hypotheses defined by circles anywhere in 2D space. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and rigorously prove the VC dimension if this family of classifiers.}
 \begin{quote}
-	The VC dimension for circles in a 2D plane is 3.
-	\\
-	\textbf{Lower bound:} Consider 3 points that make up a non-degenerate triangle. A circle centered anywhere in the space can shatter these three points. 
-	\\
-	\textbf{Upper bound:} If there are 4 points that must be labeled the following cases are possible. If the fourth point is inside the convex hull of the other 3 then it is not possible to label the inside points as -1 and the outside points as +1 (or vice versa). In the second case, the 4 points form a convex polygon. It is not possible for one circle to label these points +1, -1, +1, -1 and another circle to label the same points -1, +1, -1, +1.
+	
+	\vspace{3 mm}
 
+	The VC dimension for circles in a 2D plane is 3.
+
+	\vspace{1 mm}
+	
+	\textbf{Lower bound:} Consider 3 points that make up a non-degenerate triangle. A circle centered anywhere in the space can shatter these three points.
+
+	\vspace{1 mm}
+
+	\textbf{Upper bound:} If there are 4 points that must be labeled the following cases are possible. If the fourth point is inside the convex hull of the other 3 then it is not possible to label the inside points as -1 and the outside points as +1 (or vice versa). In the second case, the 4 points form a convex polygon. It is not possible for one circle to label these points +1, -1, +1, -1 and another circle to label the same points -1, +1, -1, +1. 
+	
+	\vspace{1 mm}
+	
 	Also, in any case a circle in 2D space can be seen as a 2-dimensional classifier. The two dimensions being the radius of the circle and the distance between the origin and the center of the circle. By Radon's theorem, for a d-dimensional classifier there exists a set of $d+1$ points such that every two nonempty subsets can be seperated from each other by a hyperplane. However, no matter which set of $d+2$ points is given, the two subsets of a Radon partition cannot be linearly separated. Therefore the VC dimension of the system is $d+1$, or 3 in this case.
 \end{quote}
 
