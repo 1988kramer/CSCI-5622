@@ -62,27 +62,26 @@
 
 A linear kernel was tested with penalty parameters of 1, 10, 100, and 1000. The highest accuracy for the linear kernel was obtained with a penalty parameter of 1, but overall the maximum accuracy of 0.964 obtained by the linear kernel was not competitive with the RBF and polynomial kernels.
 
+\begin{figure}[H]
+\centering
+	\includegraphics[width=0.6\linewidth]{linear.png}
+	\caption{linear kernel results}
+\end{figure}
+
 An RBF kernel was tested with penalty parameters of 1, 10, 100, and 1000 and gamma values of 0.0001 and 0.001. The maximum accuracy of 0.985 was obtained with a penalty parameter of 1000 and gamma of 0.001. 
+
+\begin{figure}[H]
+\centering
+	\includegraphics[width=0.6\linewidth]{RBF.png}
+	\caption{RBF kernel results}
+\end{figure}
 
 A polynomial kernel was tested with degree of 2, 3, 4, and 5 with penalty parameters of 1, 10, 100, and 1000. The maximum accuracy of 0.991 was obtained with a degree of 2 and penalty parameter of 1000. See the graphs below for details.
 
-\begin{figure}[h]
-	\centering
-	\begin{subfigure}[b]{0.4\linewidth}
-		\includegraphics[width=\linewidth]{linear.png}
-		\caption{linear kernel results}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.4\linewidth}
-		\includegraphics[width=\linewidth]{RBF.png}
-		\caption{RBF kernel results}
-	\end{subfigure}
-	~
-	\begin{subfigure}[b]{0.4\linewidth}
-		\includegraphics[width=\linewidth]{poly.png}
-		\caption{polynomial kernel results}
-	\end{subfigure}
-	\caption{results for all tested hyperparameter combinations}
+\begin{figure}[H]
+\centering
+	\includegraphics[width=0.6\linewidth]{poly.png}
+	\caption{polynomial kernel results}
 \end{figure}
 
 \subsection{Comment on classification performance for each model for optimal parameters by either testing on a hold-out set or performing cross-validation.}
@@ -157,7 +156,7 @@ The following examples were obtained by randomly sampling from the set of suppor
 	\textbf{Upper bound:} With a set of 3 points at radii $r_1 \leq r_2 \leq r_3$ from the origin no hypothesis $h$ will be able to label $r_1$ and $r_3$ as positive while also labeling $r_2$ negative. Thus, no set of three points can be shatered by an origin-centered circle.
 \end{quote}
 
-\section{Extra Credit}
+\section{Extra Credit (10pts)}
 
 \subsection{Consider the class of hypotheses defined by circles anywhere in 2D space. A hypothesis $h$ in this class can either classify points as positive if they lie on the boundary or interior of the circle, or if they lie on the boundary or exterior of the circle. State and rigorously prove the VC dimension if this family of classifiers.}
 \begin{quote}
@@ -176,7 +175,7 @@ The following examples were obtained by randomly sampling from the set of suppor
 	
 	\vspace{1 mm}
 	
-	Also, in any case a circle in 2D space can be seen as a 2-dimensional classifier. The two dimensions being the radius of the circle and the distance between the origin and the center of the circle. By Radon's theorem, for a d-dimensional classifier there exists a set of $d+1$ points such that every two nonempty subsets can be seperated from each other by a hyperplane. However, no matter which set of $d+2$ points is given, the two subsets of a Radon partition cannot be linearly separated. Therefore the VC dimension of the system is $d+1$, or 3 in this case.
+	Also, in any case a circle in 2D space can be seen as a 2-dimensional classifier. The two dimensions being the radius of the circle and the distance between the origin and the center of the circle. By Radon's theorem, for a d-dimensional classifier there exists a set of $d+1$ points such that every two nonempty subsets can be seperated from each other by a hyperplane. However, no matter which set of $d+2$ points is given, the two subsets of a Radon partition cannot be linearly separated. Therefore the VC dimension of this class of hypotheses is $d+1$, or 3 in this case.
 \end{quote}
 
 \end{document}
